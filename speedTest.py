@@ -1,5 +1,6 @@
 import os 
 import time
+from time import gmtime, strftime
 import glob
 from pptx import Presentation
 from docx import Document
@@ -57,6 +58,30 @@ def scrapePPTX(filePath):
                 paragraphs.append(paragraph.text)
     return paragraphs
 
+def getWordCount(paragraphs):
+    wordCount = 0
+    for paragraph in paragraphs:
+        for word in paragraph.split(" "):
+            wordCount = wordCount + 1
+    return wordCount
+
+def getElapsedTime(startTime):
+    #Start time will inherently be 0:0:00 and we will increment using maths and logic
+    startList = startTime.split(":")
+    currentTime = strftime("%H:%M:%S", gmtime())
+    currentTime = currentTime.split(":")
+    hoursPassed = str(int(currentTime[0]) - int(startList[0]))
+    minutesPassed = str(int(currentTime[1]) - int(startList[1]))
+    secondsPassed = str(int(currentTime[2]) - int(startList[2]) % (int(currentTime[2])+ 1))
+    
+    elapsedTime = hoursPassed + ":" + minutesPassed + ":" + secondsPassed
+    return elapsedTime
+
+def calculateWPM(elapsedTime, totalWords):
+    splitTime = elapsedTime.split(":")
+    totalSeconds = (int(splitTime[0]) * 60 * 60) + (int(splitTime[1]) * 60) + int(splitTime[2])    
+    return round((totalWords/totalSeconds)*60)
+
 
 def countIn():
     print("Starting program in 3")
@@ -72,7 +97,9 @@ def countIn():
     time.sleep(1)
     os.system(CLEAR)
 
-def read(source, paragraphs):
+def read(source, paragraphs, sourceWords):
+    count = 0
+    global TOTAL_WORDS # Change this later - bad practice
     for paragraph in paragraphs:
         for word in paragraph.split(" "):
             #Finding the letter roughly one third of the way through the word to center
@@ -82,33 +109,39 @@ def read(source, paragraphs):
             sleepModifier = 1 #How long we want to wait on each word        
             if (len(word) > 0): #Ensuring we don't run into issues with blank spaces       
                 if(len(word) > 7):
-                    sleepModifier = 1.8
+                    sleepModifier = 1.5
                 elif(word[-1] in ".,-?!;:"):
-                    sleepModifier = 2
+                    sleepModifier = 1.2
                         
                 formattedWord = word[0:centerPos] + RED + word[centerPos] + RESET + word[centerPos+1:len(word)] + RESET        
                 print("Origin: " + origin[-1]) #Keep in mind you'll want to track slide/file origin here
                 print("\n\n\n\n" + " "*(12 - centerPos) + formattedWord)
-                print("\n\n\n\nWords per minute:\t~" + str(WPM))
+                print("\n\n\n\n")
+                print(str(count) + " / " + str(sourceWords))
                 time.sleep(READ_SPEED * sleepModifier) #Waiting changes depending on context
+                count = count + 1
             else:
                 print("Origin: " + origin[-1]) #Keep in mind you'll want to track slide/file origin here
                 print("\n\n\n\n")
-                print("\n\n\n\nWords per minute:\t~" + str(WPM))
+                print(str(count) + " / " + str(sourceWords))
+                count = count + 1
+            
+            TOTAL_WORDS = TOTAL_WORDS + 1
             os.system(CLEAR) #clearing our terminal so we can stay at the top of the window
             
 
 # VARIABLE DECLARATIONS
 
 CLEAR = "cls" if os.name == "nt" else "clear"
-READ_SPEED = 0.07 #0.07 is manageable
+READ_SPEED = 0.09 #0.07 is manageable
 WPM = round(60 / READ_SPEED) #Seconds in a minute.
-#Test paragraph below
-testP = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
-
 RED = "\033[1;31m" #Formatting options
 RESET = "\033[0;0m" #Formatting options
 BOLD = "\033[1m" #Formatting options
+TOTAL_WORDS = 0
+TIME_STARTED = "0"
+TIME_END = "0"
+
 os.system(CLEAR) # Getting all the junk out of the way before we start
 
 #  --- MAIN RUNTIME ---
@@ -132,18 +165,24 @@ for file in fileLocations:
         sources[file] = scrapePDF(file)
 print("Starting ...")
 time.sleep(1)
+os.system(CLEAR)
 countIn()
 
+TIME_STARTED = strftime("%H:%M:%S", gmtime())
 for file in fileLocations:
     splitPath = file.split("/") if file[-1] == "/" else file.split("\\")
     print("\n\n\n\n\n" + " "*12 + RED + "N" + RESET + "ext Source: " + splitPath[-1])
     time.sleep(2)
     os.system(CLEAR)
-    read(file, sources[file])
+    totalWords = getWordCount(sources[file])
+    read(file, sources[file], totalWords)
     os.system(CLEAR)
 
-
 print("Done")
-
+print("Time Started: " + TIME_STARTED)
+print("Time Reading: " + getElapsedTime(TIME_STARTED))
+print("Time Ended: " + strftime("%H:%M:%S", gmtime()))
+print("Total Words Read: " + str(TOTAL_WORDS))
+print("Read speed: " + str(calculateWPM(getElapsedTime(TIME_STARTED), TOTAL_WORDS)) + "WPM")
 
 
