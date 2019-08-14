@@ -8,7 +8,7 @@ This application will parse files and present them to the user one word at a tim
 ## Supported Filetypes
 
 - .PDF
-..* This is currently being developed and is very hit-or-miss right now
+⋅⋅* This is currently being developed and is very hit-or-miss right now
 - .DOCX
 - .PPTX
 - .TXT
