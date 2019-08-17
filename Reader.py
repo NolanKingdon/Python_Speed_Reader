@@ -19,6 +19,9 @@ class Reader:
         self.__CLEAR = clearKeyword
         self._TOTAL_WORDS = 0
         self._TIME_STARTED = ""
+        self._LAST_WORD = ""
+        self._CURRENT_PARAGRAPH = ""
+        self._CURRENT_FILE = ""
         
     # Opens the folder provided by filepath. Returns the fileList OR False if address is bad
     def openFolder(self, filePath):
@@ -37,13 +40,10 @@ class Reader:
         
     # Loads in sources from file locations
     def loadSources(self, fileLocations):
-        os.system(self.__CLEAR)
+        #os.system(self.__CLEAR)
         sources = {}
         for file in fileLocations:
             ext = file.split(".")[-1].lower()
-            print("Reading " + file + "...")
-            time.sleep(0.5)
-            os.system(self.__CLEAR)
             if (ext == "pptx"):
                 sources[file] = self.__scrapePPTX(file)
             if (ext == "docx"):
@@ -63,6 +63,17 @@ class Reader:
         splitPath = file.split("/") if file[-1] == "/" else file.split("\\")
         totalWords = self.__getWordCount(sources[file])
         return (splitPath[-1], totalWords)
+
+    def setReadSpeed(self, WPM):
+        self._READ_SPEED = (60/WPM)/2
+
+    # Getter for last read word
+    def getLastWord(self):
+        return self._LAST_WORD
+
+    # Clearing our last word for when we're done the read or reset the reader
+    def clearLastWord(self):
+        self._LAST_WORD = "" 
     
     # Getter for read speed - value we time.sleep by
     def getReadSpeed(self):
@@ -152,6 +163,8 @@ class Reader:
             elif(word[-1] in ".,-?!;:"):
                 sleepModifier = 1.2
             centerPos = int(len(word)/3)
+        #Tracking our last word
+        self._LAST_WORD = word            
         # Incrementing our total words
         self._TOTAL_WORDS = self._TOTAL_WORDS + 1
         # Tuples are great.
