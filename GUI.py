@@ -120,12 +120,14 @@ class App(QWidget):
         self.paragraph.resize(460, 600)
         self.paragraph.setAlignment(Qt.AlignCenter)
         self.paragraph.setFont(QFont("Calibri", 15))
-        self.paragraph.setStyleSheet("background-color: #FFFFFF; border: 1px solid black; text-align: center;")
         self.paragraph.setWordWrap(True)
+        self.paragraph.setObjectName("summary-paragraph")
 
         self.currentFile = QLabel("Current File", self)
         self.currentFile.move(20, 150)
-        self.currentFile.resize(300, 20) 
+        self.currentFile.resize(300, 20)
+        self.currentFile.setFont(QFont("Calibri", 15))
+        self.currentFile.setObjectName("current-file")
 
         self.setExtraStyles(EXTRA_STYLES)
         
@@ -136,9 +138,9 @@ class App(QWidget):
         self.extraBox = QCheckBox("Show Detailed View", self)
         self.extraBox.move(20,120)
         self.extraBox.clicked.connect(self.handleCheck)
-        #self.extras.
+        
         self.darkMode = QCheckBox("Dark Mode", self)
-        self.darkMode.move(200, 120)
+        self.darkMode.move(400, 120)
         self.darkMode.clicked.connect(self.toggleDarkmode)
 
         self.wpmLabel = QLabel(str(self.WPM) + "WPM", self)
@@ -160,7 +162,8 @@ class App(QWidget):
         self.progress.setStyleSheet(WORD_STYLES)
     
     def setExtraStyles(self, EXTRA_STYLES):
-        pass
+        self.paragraph.setStyleSheet(EXTRA_STYLES)
+        self.currentFile.setStyleSheet(EXTRA_STYLES)
 
     def setFloaterStyles(self, FLOAT_STYLES):
         pass
@@ -182,6 +185,7 @@ class App(QWidget):
         self.setStyleSheet(self.stylesDict['main'])
         self.setWordStyles(self.stylesDict["word"])
         self.setTopStyles(self.stylesDict["top"])
+        self.setExtraStyles(self.stylesDict["extra"])
         
     @pyqtSlot()
     

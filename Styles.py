@@ -53,7 +53,7 @@ class Styles():
 
             QLabel {
                 background-color: transparent;
-                color: white;
+                color: #e8e8e8;
             }
 
             QLabel#red-letter {
@@ -73,6 +73,21 @@ class Styles():
                 width: 1px;
             }
 
+            """
+
+            self.EXTRA_STYLES = """
+
+            QLabel#summary-paragraph {
+                background-color: #171717;
+                border: 1px solid black;
+                text-align: center;
+                color: #e8e8e8;
+            }
+
+            QLabel#current-file {
+                color: #e8e8e8
+            }
+            
             """
 
         # ***************** NORMAL MODE *********************
@@ -102,6 +117,7 @@ class Styles():
 
             QProgressBar
             {
+                background-color: #FFFFFF;
                 border: 1px solid black;
                 text-align: right;
                 color: transparent;
@@ -112,6 +128,25 @@ class Styles():
                 width: 1px;
             }
             """
+
+            self.FLOAT_STYLES = """
+
+                
+
+            """
+
+            self.EXTRA_STYLES = """
+
+            QLabel#summary-paragraph {
+                background-color: #FFFFFF;
+                border: 1px solid black;
+                text-align: center;
+            }
+            
+            
+            """
+
+
     
     def getStyles(self):
         return {
