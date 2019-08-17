@@ -54,7 +54,7 @@ class App(QWidget):
         self.start.setToolTip('Start Speed Reading')
         self.start.move(0, 0)
         self.start.clicked.connect(self.startRead)
-        
+        self.start.setEnabled(False) # Initially falsed to prevent starting with no sources loaded
         
         self.pause = QPushButton('Pause', self)
         self.pause.setToolTip('Pause Current Read Stream')
@@ -92,7 +92,6 @@ class App(QWidget):
         self.w1 = QLabel("Wo", self)
         self.w2 = QLabel("r", self)
         self.w3 = QLabel("ds", self)
-        
         
         #self.w1.setStyleSheet("background-color: #FFFFFF");
         self.w1.move(20, 60)
@@ -192,7 +191,6 @@ class App(QWidget):
         self.setExtraStyles(self.stylesDict["extra"])
         
     @pyqtSlot()
-    
     def handleCheck(self):
         self.extras = not self.extras
         
@@ -214,6 +212,7 @@ class App(QWidget):
     @pyqtSlot()
     def openLocation(self):
         self.dir_ = QFileDialog.getExistingDirectory(None, 'Select a Folder:', "Documents", QFileDialog.ShowDirsOnly)
+        self.start.setEnabled(True)
 
     @pyqtSlot()
     def toggleRead(self):

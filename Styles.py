@@ -55,7 +55,7 @@ class Styles():
                 
                 QSlider::handle:horizontal
                 {
-                     background-color: #7ef2f2;
+                     background-color: #00c5d7;
                      height: 20px;
                      width: 10px;
                      margin: -20px 0;
