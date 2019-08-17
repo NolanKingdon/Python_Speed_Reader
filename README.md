@@ -16,6 +16,17 @@ I am planning on expanding into .HTML, and improving the .PDF in the future.
 
 ## Examples
 
+### GUI
+
+Compact View:
+![Speed Reader GUI](https://github.com/NolanKingdon/Python_Speed_Reader/blob/master/imgs/compact.PNG "Compact Screen Reader")
+
+Expanded View:
+![Speed Reader Darkmode Expanded](https://github.com/NolanKingdon/Python_Speed_Reader/blob/master/imgs/darkModeGUI.PNG "Dark Mode Expanded")
+
+Note that the word bar fills as you progress through the file. This way, you know where you are in the document without looking away from the screen
+
+### Console UI
 ![Speed Reader in Action](https://github.com/NolanKingdon/Python_Speed_Reader/blob/master/imgs/sample.PNG "Example of the Reader running")
 ![Speed Reader in Action](https://github.com/NolanKingdon/Python_Speed_Reader/blob/master/imgs/sample2.PNG "")
 
