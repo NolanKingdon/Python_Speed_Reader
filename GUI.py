@@ -144,7 +144,8 @@ class App(QWidget):
         self.darkMode.clicked.connect(self.toggleDarkmode)
 
         self.wpmLabel = QLabel(str(self.WPM) + "WPM", self)
-        self.wpmLabel.move(375, 30)  
+        self.wpmLabel.move(375, 30)
+        self.wpmLabel.setObjectName("wpm")
 
         self.setFloaterStyles(FLOAT_STYLES)
 
@@ -166,7 +167,9 @@ class App(QWidget):
         self.currentFile.setStyleSheet(EXTRA_STYLES)
 
     def setFloaterStyles(self, FLOAT_STYLES):
-        pass
+        self.extraBox.setStyleSheet(FLOAT_STYLES)
+        self.darkMode.setStyleSheet(FLOAT_STYLES)
+        self.wpmLabel.setStyleSheet(FLOAT_STYLES)
 
     @pyqtSlot()
     def toggleDarkmode(self):
@@ -185,6 +188,7 @@ class App(QWidget):
         self.setStyleSheet(self.stylesDict['main'])
         self.setWordStyles(self.stylesDict["word"])
         self.setTopStyles(self.stylesDict["top"])
+        self.setFloaterStyles(self.stylesDict["float"])
         self.setExtraStyles(self.stylesDict["extra"])
         
     @pyqtSlot()

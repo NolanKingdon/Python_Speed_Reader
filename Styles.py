@@ -29,34 +29,51 @@ class Styles():
             # Topbar styles
             self.TOP_STYLES = """
 
-                QPushButton {
+                QPushButton
+                {
                     color: #e8e8e8;
                     background-color: #303030;
                 }
 
-                QPushButton::disabled {
+                QPushButton::disabled
+                {
                     background-color: #4f4e4e;
                     color: #b5b5b5;
                 }
 
-                QPushButton:hover {
+                QPushButton:hover
+                {
                     cursor: pointer;
                 }
 
-                QSlider::handle:horizontal {
-                     background-color: #7ef2f2;
+                QSlider::groove:horizontal
+                {
+                    border: 1px solid #999999;
+                    height: 2px; /*the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
                 }
+                
+                QSlider::handle:horizontal
+                {
+                     background-color: #7ef2f2;
+                     height: 20px;
+                     width: 10px;
+                     margin: -20px 0;
+                }
+                
             """
 
             # Read Words Styles
             self.WORD_STYLES = """
 
-            QLabel {
+            QLabel
+            {
                 background-color: transparent;
-                color: #e8e8e8;
+                color: #d8d8d8;
             }
 
-            QLabel#red-letter {
+            QLabel#red-letter
+            {
                 color: red;
             }
 
@@ -67,6 +84,7 @@ class Styles():
                 text-align: right;
                 color: transparent;
             }
+            
             QProgressBar::chunk
             {
                 background-color: #212121;
@@ -75,17 +93,33 @@ class Styles():
 
             """
 
+            self.FLOAT_STYLES = """
+
+            QLabel#wpm
+            {
+                color: #d8d8d8;
+            }
+
+            QCheckBox
+            {
+                color: #d8d8d8;
+            }
+
+            """
+
             self.EXTRA_STYLES = """
 
-            QLabel#summary-paragraph {
+            QLabel#summary-paragraph
+            {
                 background-color: #171717;
                 border: 1px solid black;
                 text-align: center;
-                color: #e8e8e8;
+                color: #d8d8d8;
             }
 
-            QLabel#current-file {
-                color: #e8e8e8
+            QLabel#current-file
+            {
+                color: #d8d8d8
             }
             
             """
@@ -99,19 +133,22 @@ class Styles():
             
             self.TOP_STYLES = """
 
-                QSlider::handle:horizontal {
+                QSlider::handle:horizontal
+                {
                      background-color: #cedbf0;
                 }
             """
 
             self.WORD_STYLES = """
 
-            QLabel {
+            QLabel
+            {
                 background-color: transparent;
                 color: black;
             }
 
-            QLabel#red-letter {
+            QLabel#red-letter
+            {
                 color: red;
             }
 
@@ -131,13 +168,13 @@ class Styles():
 
             self.FLOAT_STYLES = """
 
-                
 
             """
 
             self.EXTRA_STYLES = """
 
-            QLabel#summary-paragraph {
+            QLabel#summary-paragraph
+            {
                 background-color: #FFFFFF;
                 border: 1px solid black;
                 text-align: center;
