@@ -354,7 +354,8 @@ class App(QWidget):
         if len(inp.split(".")) == 2: #The end of the location has an extension and is a file
             pass #Will handle the file read here in the future        
         elif len(inp.split(".")) == 1: #This is a folder not a file
-            fileLocations = self.reader.openFolder(inp) # Error handle here too
+            if inp is not "": # Making 100% sure something is in there
+                fileLocations = self.reader.openFolder(inp) # Error handle here too
             
         sources = self.reader.loadSources(fileLocations) # Processing sources
         
