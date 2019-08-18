@@ -1,3 +1,7 @@
+'''
+    Styles Module for the GUI. Returns a dictionary of strings containing
+    specific styles for certain sections of the GUI
+'''
 class Styles():
 
     def __init__(self, mode):
