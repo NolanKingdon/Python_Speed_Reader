@@ -413,7 +413,13 @@ class App(QWidget):
             while(self.READ):
                 for file in fileLocations:
                     # Splitting the current file text to just be the file name and no directories
-                    self.currentFile.setText(file.split("\\")[-1]) #This may give issues in UNIX systems - verify
+                    fileName = file.split("\\")[-1]
+                    self.currentFile.setText(fileName) #This may give issues in UNIX systems - verify
+                    # Displaying file title for better UX
+                    self.w1.setText(fileName[0:round(len(fileName)/2)])
+                    self.w2.setText(fileName[round(len(fileName)/2)])
+                    self.w3.setText(fileName[round(len(fileName)/2)+1:len(fileName)])
+                    time.sleep(3)
                     # If we're poaused, we break
                     if not self.READ: break
                     # Other wise, if We're in our first read, we will need to initialize our count, readWords, and paths
