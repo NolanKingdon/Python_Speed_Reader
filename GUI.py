@@ -356,12 +356,27 @@ class App(QWidget):
         elif len(inp.split(".")) == 1: #This is a folder not a file
             if inp is not "": # Making 100% sure something is in there
                 fileLocations = self.reader.openFolder(inp) # Error handle here too
-            
+        
         sources = self.reader.loadSources(fileLocations) # Processing sources
         
         # Creating a thread - necessary to allow for the read to be inturrupted
         x = threading.Thread(target=self.read, args=(str(self.WPM), fileLocations, sources))
         x.start() # Start thread
+
+    """
+        Displays cool end metrics tracked by the reader object to the paragraph screen
+    """
+    def endMetrics(self):
+        wordsRead = self.reader.getTotalWords()
+        startTime = self.reader.getStartTime()
+        elapsedTime = self.reader.getElapsedTime(startTime)
+        trueWPM = self.reader.getTrueWPM(elapsedTime)
+        # *** Adding the metric information to the paragraph area
+
+        self.paragraph.setText("Total Words Read: " + str(wordsRead) + "\nStart Time: " + str(startTime) + "\nRead Time: " +
+                               str(elapsedTime) + " seconds\n Actual Words Per Minute: " + str(trueWPM))
+        
+        self.reader.reset() # Resetting the reader because we're done.
 
     '''
         The Emit handler for incrementing the progress bar
@@ -380,9 +395,10 @@ class App(QWidget):
     '''
     def read(self, WPM, fileLocations, sources):
         self.updated.connect(self.handleTrigger) # Connecting to our emit handler
-        
+        self.reader.setStartTime() # Tracking when we actually start reading
         self.reader.setReadSpeed(int(WPM)) #Setting our sleep value
-        readSpeed = self.reader.getReadSpeed() #Getting our sleep value    
+        readSpeed = self.reader.getReadSpeed() #Getting our sleep value
+        
 
         '''
             Note - There's a lot of work going on here that's not in the reader. Work on making the reader hold...
@@ -430,7 +446,8 @@ class App(QWidget):
                             #(centerPos, sleepModifier) = self.reader.read(file, word_)
                             self.readWords += 1 #Our words for tracking overall progress in the file
                             self.wordIndex += 1 #Our words for tracking where we are should we want to pause and resume
-                            time.sleep(readSpeed * sleepModifier) # Keeping the word displayed for
+                            time.sleep(readSpeed * sleepModifier) # Keeping the word displayed for this long
+                            
                             if not self.READ: break # Breaking if the read is paused
                         if not self.READ: break # Breaking if the read is paused
                         self.wordIndex = 0 # If we complete the paragraph, reset our wordIndex back to the first one
@@ -444,6 +461,7 @@ class App(QWidget):
                 if not self.READ : break # If we are pausing, we don't want to do any of the below
                 self.updated.emit(100) # Updating out the final notch to the percent bar
                 self.READ = False
+                self.endMetrics() # Printing cool metrics to the paragraph section
                 self.reader.clearLastWord() # Clearing the last stored word in our reader object
         except Exception as e:
             print("Something went wrong!\n" + str(e))
@@ -466,6 +484,7 @@ class App(QWidget):
         self.w2.setText("r")
         self.w3.setText("ds")
         self.progress.setValue(0)
+        self.reader.reset() # Completely resetting our reader as well.
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)

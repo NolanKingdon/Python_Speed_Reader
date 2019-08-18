@@ -1,6 +1,7 @@
 import os 
 import time
 from time import gmtime, strftime
+import datetime as dt
 import glob
 from pptx import Presentation
 from docx import Document
@@ -15,7 +16,7 @@ MODEL - Sends information to the view
 class Reader:
     def __init__(self, WPM, clearKeyword):
         self.WPM = WPM
-        self._READ_SPEED = (60/WPM)/2 #The pauses are cumulative, and add lag. Adjust for it here
+        self._READ_SPEED = (60/WPM)/1.2 #The pauses are cumulative, and add lag. Adjust for it here
         self.__CLEAR = clearKeyword
         self._TOTAL_WORDS = 0
         self._TIME_STARTED = ""
@@ -37,7 +38,15 @@ class Reader:
             #Signalling an error
             print(err)
             return False
-        
+
+    def reset(self):
+        self.WPM = 300
+        self._TOTAL_WORDS = 0
+        self._TIME_STARTED = ""
+        self._LAST_WORD = ""
+        self._CURRENT_PARAGRAPH = ""
+        self._CURRENT_FILE = ""
+    
     # Loads in sources from file locations
     def loadSources(self, fileLocations):
         #os.system(self.__CLEAR)
@@ -64,9 +73,11 @@ class Reader:
         totalWords = self.__getWordCount(sources[file])
         return (splitPath[-1], totalWords)
 
+    # Setter for the read speed
     def setReadSpeed(self, WPM):
-        self._READ_SPEED = (60/WPM)/2
-
+        self.WPM = WPM
+        self._READ_SPEED = (60/WPM)/1.2
+        
     # Getter for last read word
     def getLastWord(self):
         return self._LAST_WORD
@@ -89,14 +100,25 @@ class Reader:
 
     # Getter to calculate time since start
     def getElapsedTime(self, startTime):
-        #Start time will inherently be 0:0:00 and we will increment using maths and logic
+        #Start time will inherently be 0:0:00 and we will increment using maths and logic 
         startList = startTime.split(":")
+        sh = int(startList[0])
+        sm = int(startList[1])
+        ss = int(startList[2])
+        s = dt.datetime(2000, 12, 30, sh, sm, ss)
+        
         currentTime = strftime("%H:%M:%S", gmtime())
         currentTime = currentTime.split(":")
-        hoursPassed = str(int(currentTime[0]) - int(startList[0]))
-        minutesPassed = str(int(currentTime[1]) - int(startList[1]))
-        secondsPassed = str(int(currentTime[2]) - int(startList[2]) % (int(currentTime[2])+ 1))
-        elapsedTime = hoursPassed + ":" + minutesPassed + ":" + secondsPassed
+        eh = int(currentTime[0])
+        em = int(currentTime[1])
+        es = int(currentTime[2])
+        e = dt.datetime(2000, 12, 30, eh, em, es)
+        elapsedTime = (e-s).seconds
+        
+        #hoursPassed = str(int(currentTime[0]) - int(startList[0]))
+        #minutesPassed = str(int(currentTime[1]) - int(startList[1]))
+        #secondsPassed = str(int(currentTime[2]) - int(startList[2]) % (int(currentTime[2])+ 1))
+        #elapsedTime = hoursPassed + ":" + minutesPassed + ":" + secondsPassed
         return elapsedTime
 
     # Getter for actual calculated WPM score (Accounts for punctuation and slows)
@@ -145,9 +167,9 @@ class Reader:
                 wordCount = wordCount + 1
         return wordCount
 
-    def __calculateWPM(self, elapsedTime, totalWords):
-        splitTime = elapsedTime.split(":")
-        totalSeconds = (int(splitTime[0]) * 60 * 60) + (int(splitTime[1]) * 60) + int(splitTime[2])    
+    def __calculateWPM(self, totalSeconds, totalWords):
+        #splitTime = elapsedTime.split(":")
+        #totalSeconds = (int(splitTime[0]) * 60 * 60) + (int(splitTime[1]) * 60) + int(splitTime[2])    
         return round((totalWords/totalSeconds)*60)
 
     # Determines center word and sleep modifier of specific word
@@ -159,9 +181,9 @@ class Reader:
         sleepModifier = 1 #How long we want to wait on each word
         if (len(word) > 0): #Ensuring we don't run into issues with blank spaces       
             if(len(word) > 10):
-                sleepModifier = 1.5
+                sleepModifier = 1.7
             elif(word[-1] in ".,-?!;:"):
-                sleepModifier = 1.2
+                sleepModifier = 1.3
             centerPos = int(len(word)/3)
         #Tracking our last word
         self._LAST_WORD = word            
