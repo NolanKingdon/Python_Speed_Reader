@@ -1,5 +1,5 @@
 python_pptx==0.6.18
 python_docx==0.8.10
-PyPDF2==1.26.0
+PyPDF2==1.27.9
 PyQt5==5.13.0
 docx==0.2.4
